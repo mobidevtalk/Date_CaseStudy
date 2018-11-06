@@ -15,7 +15,7 @@ class LogTests: XCTestCase{
         XCTAssertNotNil(Bundle.main.path(forResource: Logger.JsonFileName, ofType: ".json"), "👎 json file does not exits")
     }
     
-    func test_jsonFile_containsData() {
+    func test_jsonFile_contains_jsonData() {
         if let url = Bundle.main.url(forResource: Logger.JsonFileName, withExtension: "json") , let data = try? Data(contentsOf:url, options: .mappedIfSafe){
             XCTAssertNotNil(try JSONSerialization.jsonObject(with: data, options: .mutableLeaves), "👎 json file contains no json-object")
         }else{
