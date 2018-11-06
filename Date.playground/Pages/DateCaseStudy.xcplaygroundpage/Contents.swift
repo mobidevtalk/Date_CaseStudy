@@ -17,9 +17,6 @@ class LogTests: XCTestCase{
     
     func test_jsonFile_containsData() {
         if let url = Bundle.main.url(forResource: Logger.JsonFileName, withExtension: "json") , let data = try? Data(contentsOf:url, options: .mappedIfSafe){
-            print("url: \(url)")
-            print("Data: \(data)")
-            print("count: \(data.count)")
             XCTAssertNotNil(try JSONSerialization.jsonObject(with: data, options: .mutableLeaves), "👎 json file contains no json-object")
         }else{
             XCTAssert(true, "👎 File not found")
