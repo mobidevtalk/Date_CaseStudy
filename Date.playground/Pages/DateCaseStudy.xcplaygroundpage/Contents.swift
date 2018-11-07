@@ -31,6 +31,22 @@ extension Operation{
 
 struct Logger{
     static let JsonFileName = "Log"
+    
+    static var JsonData: Data? {
+        guard let url = Bundle.main.url(forResource: Logger.JsonFileName, withExtension: "json") , let data = try? Data(contentsOf:url, options: .mappedIfSafe) else { return nil }
+        return data
+    }
+    
+    var operations: [Operation]? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        if let data = Logger.JsonData {
+            return try? decoder.decode([Operation].self, from: data)
+        }
+        return nil
+    }
+    
+    
 }
 
 class LogTests: XCTestCase{
@@ -44,7 +60,7 @@ class LogTests: XCTestCase{
     }
     
     func test_jsonFile_contains_jsonData() {
-        guard let data = dataFromFile() else {
+        guard let data = Logger.JsonData else {
             XCTAssert(false, "👎 no Data")
             return
         }
@@ -52,23 +68,9 @@ class LogTests: XCTestCase{
                         "👎 json file contains no json-object")
     }
     
-    private func dataFromFile() -> Data? {
-        guard let url = Bundle.main.url(forResource: Logger.JsonFileName, withExtension: "json") , let data = try? Data(contentsOf:url, options: .mappedIfSafe) else { return nil }
-        return data
-    }
-    
     // MARK: - Json to Custom types
     func test_jsonData_converts_customType() {
-        guard let data = dataFromFile() else { return }
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        do {
-            let model = try decoder.decode([Operation].self, from: data)
-            print(model)
-        }
-        catch {
-            XCTAssert(false, "🤯 \(error)")
-        }
+        XCTAssertNotNil(Logger().operations)
     }
     
 }
