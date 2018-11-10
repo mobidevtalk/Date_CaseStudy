@@ -40,13 +40,12 @@ struct Logger{
     var operations: [Operation]? {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
+        
         if let data = Logger.JsonData {
-            return try? decoder.decode([Operation].self, from: data)
+            return try? decoder.decode([Operation].self, from: data).sorted(by: { $0.operatingTime.start < $1.operatingTime.start })
         }
         return nil
     }
-    
-    
 }
 
 class LogTests: XCTestCase{
@@ -73,6 +72,24 @@ class LogTests: XCTestCase{
         XCTAssertNotNil(Logger().operations)
     }
     
+    // MARK: - Sorting based on Date
+    func test_operations_sorting() {
+        guard let operations = Logger().operations, var tempDate = operations.first?.operatingTime.start else{
+            XCTAssert(false, "nil array")
+            return
+        }
+        
+        var unsortedCounter = 0
+        
+        Logger().operations?.reduce(into: unsortedCounter, {
+            if $1.operatingTime.start < tempDate {
+                unsortedCounter += 1
+            }
+            tempDate = $1.operatingTime.start
+        })
+        
+        XCTAssertEqual(unsortedCounter, 0, "😕 Operations are not sorted")
+    }
 }
 
 class TestObserver: NSObject, XCTestObservation {
