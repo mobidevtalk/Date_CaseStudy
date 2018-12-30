@@ -2,12 +2,12 @@ import UIKit
 import XCTest
 
 // MARK: - OperatingTime
-struct OperatingTime: Decodable {
+struct OperatingTime{
     let start: Date
     let end: Date
 }
 
-extension OperatingTime{
+extension OperatingTime: Decodable {
     enum CodingKeys: String, CodingKey {
         case start
         case end
@@ -15,13 +15,13 @@ extension OperatingTime{
 }
 
 // MARK: - Operation
-struct Operation: Decodable{
+struct Operation{
     let operatingTime: OperatingTime
     let machineId: String
     let plant: String
 }
 
-extension Operation{
+extension Operation: Decodable {
     enum CodingKeys: String, CodingKey {
         case operatingTime = "operating_time"
         case machineId = "machine_id"
